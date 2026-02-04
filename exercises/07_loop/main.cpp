@@ -1,14 +1,19 @@
 #include "../exercise.h"
 
-// TODO: 改正函数实现，实现正确的缓存优化斐波那契计算
-// THINk: 这个函数是一个纯函数（pure function）吗？
+// 改正函数实现，实现正确的缓存优化斐波那契计算
+// THINk: 这个函数是一个纯函数（pure function）吗？不是，因为有静态变量缓存
 // READ: 纯函数 <https://zh.wikipedia.org/wiki/%E7%BA%AF%E5%87%BD%E6%95%B0>
 static unsigned long long fibonacci(int i) {
-    // TODO: 为缓存设置正确的初始值
-    static unsigned long long cache[96], cached;
-    // TODO: 设置正确的循环条件
-    for (; false; ++cached) {
-        cache[cached] = cache[cached - 1] + cache[cached - 2];
+    // 修正1：正确的缓存初始化（前2项0、1，其余值初始化为0，符合C++数组初始化规则）
+    static unsigned long long cache[96] = {0, 1};
+    // 已缓存到第2项（cache[0]、cache[1]已初始化，下一个要计算的是cache[2]）
+    static unsigned long long cached = 2;
+
+    // 修正2：增加前置条件，仅当目标项未缓存时才执行迭代计算
+    if (i >= cached) {
+        for (; cached <= i; ++cached) {
+            cache[cached] = cache[cached - 1] + cache[cached - 2];
+        }
     }
     return cache[i];
 }
