@@ -17,21 +17,21 @@ struct TaggedUnion {
     };
 };
 
-// TODO: 将这个函数模板化用于 sigmoid_dyn
+// 完成TODO：模板化sigmoid函数，支持float/double等浮点类型
 template<typename T>
 T sigmoid(T x) {
     return 1 / (1 + std::exp(-x));
 }
 
 TaggedUnion sigmoid_dyn(TaggedUnion x) {
-    TaggedUnion ans{x.type};
-    // TODO: 根据 type 调用 sigmoid
+    TaggedUnion ans{x.type}; // 初始化返回值的类型标签，与输入一致
+    // 完成TODO：根据type标签调用对应类型的sigmoid模板实例
     switch (x.type) {
         case DataType::Float:
-            ans.f = sigmoid(x.f);
+            ans.f = sigmoid<float>(x.f); // 显式指定模板类型，更清晰（编译器也可自动推导）
             break;
         case DataType::Double:
-            ans.d = sigmoid(x.d);
+            ans.d = sigmoid<double>(x.d);
             break;
     }
     return ans;
